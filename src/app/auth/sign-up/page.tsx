@@ -53,7 +53,7 @@ export default function SignupCard() {
             <InputField icon={<Lock size={16} />} placeholder="Password" type="password" />
 
             <Link
-              href="/discover"
+              href="/auth/otp?flow=signup"
               className="mt-1 block w-full rounded-lg bg-gradient-to-r from-[#ff5870] to-[#ff7651] py-2.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-90"
             >
               Sign Up
@@ -63,9 +63,9 @@ export default function SignupCard() {
           {/* Footer */}
           <p className="mt-3 text-center text-sm text-white/70">
             Already have an account?{" "}
-            <span className="cursor-pointer font-semibold text-white underline">
+            <Link href="/auth/login" className="font-semibold text-white underline">
               Log in
-            </span>
+            </Link>
           </p>
         </div>
       </div>

@@ -90,9 +90,9 @@ export default function LoginPage() {
 
             <p className="mt-3 text-center text-sm text-white/80">
               Don&apos;t have an account?{" "}
-              <button type="button" className="font-semibold text-white hover:underline">
+              <Link href="/auth/sign-up" className="font-semibold text-white hover:underline">
                 Join us today.
-              </button>
+              </Link>
             </p>
 
             <div className="mt-4 flex justify-center gap-2">

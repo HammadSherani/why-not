@@ -1,15 +1,25 @@
 "use client";
 
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useRef, useState, type ClipboardEvent, type FormEvent, type KeyboardEvent } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useRef, useState, type ClipboardEvent, type FormEvent, type KeyboardEvent } from "react";
 
 const OTP_LENGTH = 6;
 
 export default function OtpPage() {
+  return (
+    <Suspense>
+      <OtpForm />
+    </Suspense>
+  );
+}
+
+function OtpForm() {
   const [otp, setOtp] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isSignupFlow = searchParams.get("flow") === "signup";
 
   function updateDigit(index: number, value: string) {
     const digit = value.replace(/\D/g, "").slice(-1);
@@ -49,7 +59,7 @@ export default function OtpPage() {
     event.preventDefault();
 
     if (otp.every(Boolean)) {
-      router.push("/auth/create-password");
+      router.push(isSignupFlow ? "/auth/profile-setup" : "/auth/create-password");
     }
   }
 
