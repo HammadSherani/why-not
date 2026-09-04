@@ -57,6 +57,11 @@ interface Transition {
   stage: Stage;
 }
 
+interface SwipeFeedback {
+  direction: Direction;
+  id: number;
+}
+
 export default function DiscoverPage() {
   const [activeCategory, setActiveCategory] = useState("Dinner");
   const [planIndex, setPlanIndex] = useState(0);
@@ -69,10 +74,13 @@ export default function DiscoverPage() {
 
   // Jab tak transition chal rahi hai, dono (outgoing + incoming) cards ek saath render hote hain
   const [transition, setTransition] = useState<Transition | null>(null);
+  const [swipeFeedback, setSwipeFeedback] = useState<SwipeFeedback | null>(null);
   const isAnimating = transition !== null;
 
   const dragStartX = useRef<number | null>(null);
   const dragCurrentX = useRef(0);
+  const feedbackId = useRef(0);
+  const [isDragging, setIsDragging] = useState(false);
   const [dragOffset, setDragOffset] = useState(0);
 
   const restingPlan = plans[planIndex % plans.length];
@@ -84,6 +92,7 @@ export default function DiscoverPage() {
     // } else {
     //   toast(message, { icon: "👋" });
     // }
+    setSwipeFeedback({ direction, id: feedbackId.current++ });
     setTransition({
       direction,
       fromIndex: planIndex,
@@ -104,6 +113,12 @@ export default function DiscoverPage() {
     return () => cancelAnimationFrame(frame);
   }, [transition]);
 
+  useEffect(() => {
+    if (!swipeFeedback) return;
+    const timer = window.setTimeout(() => setSwipeFeedback(null), 700);
+    return () => window.clearTimeout(timer);
+  }, [swipeFeedback]);
+
   // Step 2: "run" stage khatam hone ke baad official planIndex commit kar dein
   useEffect(() => {
     if (!transition || transition.stage !== "run") return;
@@ -119,6 +134,7 @@ export default function DiscoverPage() {
     if (isAnimating) return;
     dragStartX.current = event.clientX;
     dragCurrentX.current = 0;
+    setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
@@ -133,6 +149,7 @@ export default function DiscoverPage() {
 
     const distance = dragCurrentX.current;
     dragStartX.current = null;
+    setIsDragging(false);
 
     if (Math.abs(distance) < 80) {
       setDragOffset(0);
@@ -144,21 +161,21 @@ export default function DiscoverPage() {
 
   // Back-slot (small preview) position jahan se incoming card grow hoke aati hai / jahan outgoing simat jaati hai
   function backSlotTransform(direction: Direction) {
-    const x = direction === "left" ? 78 : -78;
+    const x = direction === "left" ? 120 : -120;
     return `translate(-50%, -50%) translateX(${x}%) scale(0.85)`;
   }
 
   function exitTransform(direction: Direction) {
-    const x = direction === "left" ? 78 : -78;
-    const rotate = direction === "left" ? 6 : -6;
+    const x = direction === "left" ? -120 : 120;
+    const rotate = direction === "left" ? -6 : 6;
     return `translate(-50%, -50%) translateX(${x}%) scale(0.85) rotate(${rotate}deg)`;
   }
 
   let outgoingStyle: CSSProperties | null = null;
   let incomingStyle: CSSProperties | null = null;
-  let restingStyle: CSSProperties = {
+  const restingStyle: CSSProperties = {
     transform: `translate(-50%, -50%) translateX(${dragOffset}px) rotate(${dragOffset / 20}deg)`,
-    transition: dragStartX.current !== null ? "none" : "transform 300ms ease-out",
+    transition: isDragging ? "none" : "transform 300ms ease-out",
   };
 
   if (transition) {
@@ -250,6 +267,7 @@ export default function DiscoverPage() {
             onPointerUp={handlePointerUp}
             onPointerCancel={() => {
               dragStartX.current = null;
+              setIsDragging(false);
               setDragOffset(0);
             }}
             className="relative mx-auto h-[460px] w-full max-w-[720px] touch-pan-y select-none overflow-hidden cursor-grab active:cursor-grabbing"
@@ -303,6 +321,28 @@ export default function DiscoverPage() {
                 actionsDisabled={isAnimating}
                 infoDisabled={false}
               />
+            )}
+
+            {swipeFeedback && (
+              <div
+                key={swipeFeedback.id}
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-x-0 bottom-7 z-30 flex justify-center discover-swipe-feedback"
+              >
+                <span
+                  className={`flex size-16 items-center justify-center rounded-full shadow-2xl ${
+                    swipeFeedback.direction === "left"
+                      ? "bg-[#ff6670] text-white"
+                      : "bg-white text-[#ff6670]"
+                  }`}
+                >
+                  {swipeFeedback.direction === "left" ? (
+                    <Heart size={32} fill="currentColor" strokeWidth={2.5} />
+                  ) : (
+                    <X size={34} strokeWidth={2.5} />
+                  )}
+                </span>
+              </div>
             )}
           </section>
         </div>

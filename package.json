@@ -13,6 +13,7 @@
     "prisma:studio": "prisma studio"
   },
   "dependencies": {
+    "@iconify/react": "^6.0.2",
     "@prisma/client": "6.19.3",
     "clsx": "^2.1.1",
     "lucide-react": "^1.34.0",

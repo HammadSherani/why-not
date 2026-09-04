@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Icon as IconifyIcon } from "@iconify/react";
 import ActivitiesCarousel from "@/components/home/ActivitiesCarousel";
 import FeaturedPlansCarousel from "@/components/home/FeaturedPlansCarousel";
 import Footer from "@/components/layout/Footer";
@@ -90,22 +91,22 @@ const communityStats = [
 
 const highlights = [
   {
-    icon: Zap,
+    icon: "si:lightning-fill",
     title: "Spontaneus Plans",
     description: "Discover and join exciting plans at the last minute.",
   },
   {
-    icon: User,
+    icon: "solar:user-bold",
     title: "Meet Real People",
     description: "Connect with like minded people around you.",
   },
   {
-    icon: MapPin,
+    icon: "mdi:location",
     title: "Local & Relevant",
     description: "Find plans happening near you, right now.",
   },
   {
-    icon: Shield,
+    icon: "ic:baseline-shield",
     title: "Safe & Trusted",
     description: "Verified users and secure community environment..",
   },
@@ -122,7 +123,7 @@ export default function Home() {
           priority
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0b0620] via-[#0b0620]/70 to-transparent" />
+        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0b0620] via-[#0b0620]/70 to-transparent" /> */}
 
           <div className="relative z-10 flex flex-1 flex-col">
             <header className="flex items-center justify-between gap-4 px-5 py-5 sm:px-8 sm:py-6 lg:px-12 xl:px-20">
@@ -158,7 +159,7 @@ export default function Home() {
               </div>
             </header>
 
-            <main className="flex flex-1 flex-col justify-center px-5 sm:px-8 lg:px-12 xl:px-20">
+            <main className="flex flex-1 flex-col justify-center px-5  mt-8 sm:px-8 lg:px-12 xl:px-20">
               <p className="flex items-center gap-1.5 text-xs font-medium text-white/80">
                 <Zap size={13} className="text-white" />
                 Plan less. Live more
@@ -192,21 +193,30 @@ export default function Home() {
               </div>
             </main>
 
-            <section className="border-t border-white/10 bg-black/30 backdrop-blur-sm">
-              <div className="grid grid-cols-1 gap-6 px-5 py-6 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 xl:px-20">
-                {highlights.map(({ icon: Icon, title, description }) => (
-                  <div key={title} className="flex items-start gap-3">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#ff5870]/30 to-[#ff7651]/30 text-[#ff7651]">
-                      <Icon size={16} />
-                    </span>
-                    <div>
-                      <h3 className="text-xs font-semibold text-white">{title}</h3>
-                      <p className="mt-1 text-[11px] text-white/65">{description}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
+  <section className="mb-14 mt-20 border-t-1 border-b border-b-white/30 border-white/80 bg-white/[0.01] backdrop-blur-[2px]">
+  <div className="grid grid-cols-1 gap-6 px-5 py-10 sm:grid-cols-2 sm:px-8 lg:grid-cols-4 lg:px-12 xl:px-20">
+    {highlights.map(({ icon, title, description }) => {
+
+      return (
+        <div key={title} className="flex items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[#ff7651]/20 text-[#ff7651]">
+           <IconifyIcon icon={icon} width={26} height={26} />
+          </span>
+
+          <div>
+            <h3 className="text-sm font-semibold text-white">
+              {title}
+            </h3>
+
+            <p className="mt-1 text-[13px] text-white/80">
+              {description}
+            </p>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+</section>
           </div>
         </div>
 
@@ -223,10 +233,10 @@ export default function Home() {
           connections today.
         </p>
 
-        <div className="mx-auto mt-10 grid max-w-6xl grid-cols-1 gap-6 text-left sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mx-auto mt-10 mb-10  !bg-red-400   grid max-w-6xl grid-cols-1 gap-6 text-left sm:grid-cols-2 lg:grid-cols-3">
           {steps.map(({ step, title, description, image }) => (
             <div key={step} className="overflow-hidden rounded-3xl bg-gray-50">
-              <div className="flex items-center justify-center bg-gradient-to-br from-[#f3ecfb] to-[#fdeef6] p-6">
+              <div className="flex items-center justify-center opacity-80 bg-gradient-to-br from-[#f3ecfb] to-[#fdeef6] p-6">
                 <Image
                   src={image}
                   alt={title}
